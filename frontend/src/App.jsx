@@ -1,6 +1,13 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Feed from "./components/Feed";
@@ -9,78 +16,103 @@ import EditProfile from "./components/EditProfile";
 import CreatePost from "./components/CreatePost";
 import Search from "./components/Search";
 import Sidebar from "./components/Sidebar";
+import FollowRequests from "./components/FollowRequests";
 
 function PrivateRoute({ children }) {
   const { user, loadingAuth } = useAuth();
   if (loadingAuth) return <p>Cargando...</p>;
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/login" replace />;
 }
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+
+  // Rutas donde NO queremos mostrar el sidebar
+  const hiddenSidebarRoutes = ["/login", "/register", "/reset-password"];
+  const shouldHideSidebar = hiddenSidebarRoutes.some((route) =>
+    location.pathname.startsWith(route)
+  );
+
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <div className="flex-1 p-4 bg-gray-50 min-h-screen">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <PrivateRoute>
-                    <Feed />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <PrivateRoute>
-                    <Profile />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/profile/:userId"
-                element={
-                  <PrivateRoute>
-                    <Profile />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/edit-profile"
-                element={
-                  <PrivateRoute>
-                    <EditProfile />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/create-post"
-                element={
-                  <PrivateRoute>
-                    <CreatePost />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/search"
-                element={
-                  <PrivateRoute>
-                    <Search />
-                  </PrivateRoute>
-                }
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </div>
-        </div>
-      </BrowserRouter>
-    </AuthProvider>
+    <div className="flex h-screen overflow-hidden">
+      {!shouldHideSidebar && <Sidebar />}
+      <div className={`${shouldHideSidebar ? "w-full" : "flex-1"} p-4 bg-gray-50 overflow-y-auto`}>
+        <Routes>
+          {/* Rutas protegidas */}
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Feed />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profiles/:userId"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-profile"
+            element={
+              <PrivateRoute>
+                <EditProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/create-post"
+            element={
+              <PrivateRoute>
+                <CreatePost />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <PrivateRoute>
+                <Search />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/follow-requests"
+            element={
+              <PrivateRoute>
+                <FollowRequests />
+              </PrivateRoute>
+            }
+          />
+          {/* Rutas públicas (sin sidebar) */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Cualquier otra ruta redirige a "/" */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}

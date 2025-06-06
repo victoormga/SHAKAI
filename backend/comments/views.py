@@ -1,12 +1,14 @@
+# comments/views.py
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Comment
 from .serializers import CommentSerializer
 
-# --------------------------------------------
-# Vista para listar/crear comentarios de un post
-# --------------------------------------------
+# Importa Notification
+from notifications.models import Notification
+from posts.models import Post
+
 class ListCreateCommentView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer
@@ -18,15 +20,24 @@ class ListCreateCommentView(generics.ListCreateAPIView):
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx["request"] = self.request
-        # Pasamos el objeto Post completo al serializer.create()
-        from posts.models import Post
         post = get_object_or_404(Post, id=self.kwargs["post_id"])
         ctx["post"] = post
         return ctx
 
-# --------------------------------------------
-# Vista para obtener / editar / eliminar un comentario
-# --------------------------------------------
+    def perform_create(self, serializer):
+        # Aquí serializer.create() depende de tu CommentSerializer,
+        # pero suponemos que el serializer usa ctx["post"] y request.user.
+        comment = serializer.save()
+        # Una vez creado el comentario, generamos la notificación:
+        Notification.objects.create(
+            recipient=comment.post.user,
+            sender=self.request.user,
+            notif_type="comment",
+            post=comment.post,
+            comment=comment
+        )
+
+
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CommentSerializer

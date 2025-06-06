@@ -40,7 +40,7 @@ function Search() {
         {results.map((perfil) => (
           <div
             key={perfil.user}
-            onClick={() => navigate(`/profile/${perfil.user}`)}
+            onClick={() => navigate(`/profiles/${perfil.user}`)}
             className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
           >
             {perfil.profile_image ? (

@@ -26,13 +26,13 @@ function Profile() {
           const postsRes = await api.get(`/posts/user/${user.id}/`);
           setPosts(postsRes.data);
         } else {
-          const res = await api.get(`/profiles/${userId}/`);
+          const res = await api.get(`auth/profiles/${userId}/`);
           setProfileData(res.data);
           // Cargar posts de ese usuario
           const postsRes = await api.get(`/posts/user/${userId}/`);
           setPosts(postsRes.data);
           // Comprobar si sigo a ese usuario
-          const followRes = await api.get(`/follow/status/${userId}/`);
+          const followRes = await api.get(`/follows/status/${userId}/`);
           setIsFollowing(followRes.data.is_following);
         }
       } catch (err) {
@@ -45,7 +45,7 @@ function Profile() {
 
   const handleFollow = async () => {
     try {
-      await api.post(`/follow/${userId}/`);
+      await api.post(`/follows/${userId}/`);
       setIsFollowing(true);
     } catch (err) {
       console.error(err);
@@ -55,7 +55,7 @@ function Profile() {
 
   const handleUnfollow = async () => {
     try {
-      await api.delete(`/follow/unfollow/${userId}/`);
+      await api.delete(`/follows/unfollow/${userId}/`);
       setIsFollowing(false);
     } catch (err) {
       console.error(err);
@@ -66,7 +66,7 @@ function Profile() {
   const handleBlock = async () => {
     if (!window.confirm("¿Bloquear a este usuario?")) return;
     try {
-      await api.post(`/block/${userId}/`);
+      await api.post(`/blocks/${userId}/`);
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -76,7 +76,7 @@ function Profile() {
 
   const handleUnblock = async () => {
     try {
-      await api.delete(`/block/unblock/${userId}/`);
+      await api.delete(`/blocks/unblock/${userId}/`);
       alert("Usuario desbloqueado.");
     } catch (err) {
       console.error(err);
@@ -94,7 +94,7 @@ function Profile() {
           <img
             src={profileData.profile_image}
             alt="Avatar"
-            className="w-16 h-16 rounded-full object-cover"
+            className="w-24 h-24 rounded-full object-cover"
           />
         ) : (
           <div className="w-16 h-16 bg-gray-300 rounded-full" />

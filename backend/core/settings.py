@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "follows",
     "blocks",
     "search",
+    "notifications",
 ]
 
 MIDDLEWARE = [
