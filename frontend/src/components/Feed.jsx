@@ -10,7 +10,7 @@ function Feed() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await api.get("/posts/all/");
+        const res = await api.get("/posts/feed/");
         setPosts(res.data);
       } catch (err) {
         console.error(err);

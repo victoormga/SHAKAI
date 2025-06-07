@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import User, Profile
+from follows.models import Follow
+from posts.models import Post
 
 # --------------------------------------------
 # Serializador para registro de usuarios
@@ -24,7 +26,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         display_name = validated_data["display_name"]
 
         user = User.objects.create_user(email=email, password=password)
-        # El Profile ya se crea automáticamente por la señal, pero queremos actualizar display_name
         profile = user.profile
         profile.display_name = display_name
         profile.save()
@@ -46,6 +47,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 # --------------------------------------------
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email", read_only=True)
+    followers_count = serializers.SerializerMethodField(read_only=True)
+    following_count = serializers.SerializerMethodField(read_only=True)
+    posts_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
@@ -56,15 +60,20 @@ class ProfileSerializer(serializers.ModelSerializer):
             "profile_image",
             "is_private",
             "created_at",
+            "followers_count",
+            "following_count",
+            "posts_count",
         )
         read_only_fields = ("created_at", "email")
 
-    def validate_display_name(self, value):
-        user = self.context["request"].user
-        qs = Profile.objects.filter(display_name__iexact=value).exclude(user=user)
-        if qs.exists():
-            raise serializers.ValidationError("Este display_name ya está en uso.")
-        return value
+    def get_followers_count(self, obj):
+        return Follow.objects.filter(following=obj.user, is_accepted=True).count()
+
+    def get_following_count(self, obj):
+        return Follow.objects.filter(follower=obj.user, is_accepted=True).count()
+
+    def get_posts_count(self, obj):
+        return Post.objects.filter(user=obj.user, is_deleted=False).count()
 
 # --------------------------------------------
 # Serializador para exponer datos del usuario (me mismo)
@@ -75,7 +84,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "email", "profile",)
-
 
 # --------------------------------------------
 # Serializador para lista de perfiles (búsqueda pública)

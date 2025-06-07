@@ -18,7 +18,7 @@ import {
 // - label: texto a mostrar cuando el sidebar esté expandido
 // - route: si existe, al hacer click navegamos a esa ruta
 const menuItems = [
-  { icon: <Home size={24} />, label: "Inicio", route: "/" },
+  { icon: <Home size={24} />, label: "Inicio", route: "/feed" },
   { icon: <Search size={24} />, label: "Búsqueda", route: "/search" },
   { icon: <Heart size={24} />, label: "Notificaciones", route: "/notifications" },
   { icon: <Mail size={24} />, label: "Solicitudes", route: "/follow-requests" },

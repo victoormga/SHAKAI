@@ -106,6 +106,12 @@ function Profile() {
           <p className="text-sm text-gray-400">
             {profileData.is_private ? "Cuenta Privada" : "Cuenta Pública"}
           </p>
+          {/* Contadores de publicaciones, seguidores y siguiendo */}
+          <div className="mt-2 flex space-x-4 text-sm text-gray-700">
+            <span><strong>{profileData.posts_count}</strong> publicaciones</span>
+            <span><strong>{profileData.followers_count}</strong> seguidores</span>
+            <span><strong>{profileData.following_count}</strong> siguiendo</span>
+          </div>
         </div>
       </div>
 
@@ -157,10 +163,14 @@ function Profile() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {posts.map((post) => (
-              <PostCard key={post.id} post={post} refreshFeed={() => {
-                // Quitar post de la vista si lo borró el autor
-                setPosts((prev) => prev.filter((p) => p.id !== post.id));
-              }} />
+              <PostCard
+                key={post.id}
+                post={post}
+                refreshFeed={() => {
+                  // Quitar post de la vista si lo borró el autor
+                  setPosts((prev) => prev.filter((p) => p.id !== post.id));
+                }}
+              />
             ))}
           </div>
         )}
