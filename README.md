@@ -120,4 +120,4 @@ Este proyecto está bajo la licencia MIT.
 
 ## 👤 Autor
 
-VictooR MGA - [GitHub](https://github.com/victoormga)
+victoormga - [GitHub](https://github.com/victoormga)
