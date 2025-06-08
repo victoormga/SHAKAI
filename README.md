@@ -105,8 +105,10 @@ El frontend estará disponible en [http://localhost:5173](http://localhost:5173)
 
 ```
 SHAKAI/
-├── backend/     # Proyecto Django (DRF + PostgreSQL)
-├── frontend/    # Proyecto React + Tailwind + Vite
+├── backend/     # Proyecto Django (DRF + MySql + Django Dockerfile)
+├── frontend/    # PRpyecto React + Vite y React Dockerfile
+├── venv/
+├── docker-compose.yml
 └── README.md
 ```
 
