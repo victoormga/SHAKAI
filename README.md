@@ -37,41 +37,25 @@ cd SHAKAI
 ```bash
 docker-compose up --build -d
 ```
-
-Crea el archivo `.env`:
-
-```bash
-cp .env.example .env
-```
-
-Asegúrate de que `.env` contenga tus credenciales de PostgreSQL, secret key, etc.
-
-Luego, prepara la base de datos:
+###  3. Aplica migraciones y crea el superusuario (solo una vez):
 
 ```bash
-python manage.py migrate
-python manage.py createsuperuser
+docker-compose exec backend python manage.py migrate
+docker-compose exec backend python manage.py createsuperuser
 ```
 
-Finalmente, ejecuta el servidor backend:
+###  4. Accede a la app, teniendo estos dos puertos abiertos necesariamente (entrando por el del Frontend):
 
 ```bash
-python manage.py runserver
+Backend (API): http://localhost:8000
+
+Frontend: http://localhost:5173
 ```
-
-El backend estará disponible en [http://localhost:8000](http://localhost:8000)
-
----
-
-###  3. Configura el entorno frontend (React)
+### Para eliminar los contenedores:
 
 ```bash
-cd ../frontend
-npm install
-npm run dev
+docker-compose down
 ```
-
-El frontend estará disponible en [http://localhost:5173](http://localhost:5173)
 
 ---
 
