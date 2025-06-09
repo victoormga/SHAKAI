@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  # Base de datos MySQL inicializada automáticamente
+  # 1) Base de datos MySQL inicializada automáticamente
   db:
     image: mysql:8.0
     container_name: shakai-mysql
@@ -11,12 +11,17 @@ services:
       MYSQL_DATABASE: mydb
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
-  # Backend Django
+  # 2) Backend Django
   backend:
     build:
       context: ./backend
@@ -26,7 +31,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Deben coincidir con ENV del Dockerfile y settings.py
+      # Deben coincidir con settings.py
       SECRET_KEY:    django-insecure-yourprodsecret
       DEBUG:         "False"
       ALLOWED_HOSTS: "localhost,127.0.0.1"
@@ -36,9 +41,19 @@ services:
       DB_HOST:       db
       DB_PORT:       "3306"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        until nc -z db 3306; do
+          echo 'Esperando a MySQL…';
+          sleep 2;
+        done;
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
 
-  # Frontend React
+  # 3) Frontend React/Vite
   frontend:
     build:
       context: ./frontend
