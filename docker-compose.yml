@@ -18,7 +18,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     container_name: shakai-backend
     volumes:
       - ./backend:/app
@@ -36,7 +36,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: frontend/Dockerfile
+      dockerfile: Dockerfile
     container_name: shakai-frontend
     volumes:
       - ./frontend:/app
