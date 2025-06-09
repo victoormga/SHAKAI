@@ -17,6 +17,7 @@ import CreatePost from "./components/CreatePost";
 import Search from "./components/Search";
 import Sidebar from "./components/Sidebar";
 import FollowRequests from "./components/FollowRequests";
+import Notifications from "./components/Notifications";
 
 function PrivateRoute({ children }) {
   const { user, loadingAuth } = useAuth();
@@ -92,6 +93,14 @@ function AppContent() {
             element={
               <PrivateRoute>
                 <FollowRequests />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <Notifications />
               </PrivateRoute>
             }
           />

@@ -17,6 +17,7 @@ class NotificationMarkReadView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = "id"
     queryset = Notification.objects.all()
+    http_method_names = ["post", "patch", "put", "options", "head"]
 
     def get_object(self):
         notif = super().get_object()
@@ -24,8 +25,11 @@ class NotificationMarkReadView(generics.UpdateAPIView):
             raise PermissionDenied("No puedes modificar esta notificación.")
         return notif
 
+    def post(self, request, *args, **kwargs):
+        # Alias para que POST llame a update()
+        return self.update(request, *args, **kwargs)
+
     def update(self, request, *args, **kwargs):
-        # Marcar como leído ignorando el payload
         notif = self.get_object()
         notif.is_read = True
         notif.save()

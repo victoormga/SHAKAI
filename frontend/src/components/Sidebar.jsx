@@ -9,7 +9,6 @@ import {
   Heart,
   PlusSquare,
   User,
-  MoreHorizontal,
   LogOut,
 } from "lucide-react";
 
@@ -24,7 +23,6 @@ const menuItems = [
   { icon: <Mail size={24} />, label: "Solicitudes", route: "/follow-requests" },
   { icon: <PlusSquare size={24} />, label: "Crear", route: "/create-post" },
   { icon: <User size={24} />, label: "Perfil", route: "/profile" },
-  { icon: <MoreHorizontal size={24} />, label: "Más" },
 ];
 
 export default function Sidebar() {
