@@ -89,15 +89,8 @@ El frontend estará disponible en [http://localhost:5173](http://localhost:5173)
 - Modales para ver publicaciones
 - Gestión de privacidad en perfiles
 - Subida de imágenes y videos
-
----
-
-## 🛠️ En desarrollo
-
 - Notificaciones (seguir, comentar, dar like)
-- Recuperación de contraseña por email
 - Búsqueda de usuarios
-- Mejoras UI/UX
 
 ---
 
