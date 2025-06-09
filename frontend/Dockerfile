@@ -1,22 +1,20 @@
-# 1. Imagen base Node ligera
+# 1. Imagen Node ligera
 FROM node:18-alpine
 
 # 2. Directorio de trabajo
 WORKDIR /app
 
-# 3. Copiar package.json e instalar dependencias
+# 3. Copiar y instalar deps
 COPY package.json package-lock.json* ./
 RUN npm install
 
-# 4. Copiar el resto del código
+# 4. Copiar código y generar build
 COPY . .
-
-# 5. Construir la app para producción (genera dist/)
 RUN npm run build
 
-# 6. Instalar servidor estático y exponer puerto
+# 5. Instalar http-server y exponer puerto de producción
 RUN npm install -g http-server
-EXPOSE 5173
+EXPOSE 5175
 
-# 7. Servir la carpeta dist
-CMD ["http-server", "dist", "-p", "5173", "-c-1"]
+# 6. Servir carpeta dist sin cache (-c-1)
+CMD ["http-server", "dist", "-p", "5175", "-c-1"]

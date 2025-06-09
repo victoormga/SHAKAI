@@ -23,22 +23,19 @@ SHAKAI es una red social desarrollada con **Django REST Framework** en el backen
 
 ---
 
-## 🧪 Instalación y ejecución local
+##  Instalación y ejecución con docker-compose
 
-### 🔁 1. Clona el repositorio
+###  1. Clona el repositorio
 
 ```bash
 git clone https://github.com/victoormga/SHAKAI.git
 cd SHAKAI
 ```
 
-### 🐍 2. Configura el entorno backend (Django)
+###  2. Construye y levanta los contenedores:
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate   # En Windows: venv\Scripts\activate
-pip install -r requirements.txt
+docker-compose up --build -d
 ```
 
 Crea el archivo `.env`:
@@ -66,7 +63,7 @@ El backend estará disponible en [http://localhost:8000](http://localhost:8000)
 
 ---
 
-### ⚛️ 3. Configura el entorno frontend (React)
+###  3. Configura el entorno frontend (React)
 
 ```bash
 cd ../frontend
@@ -98,18 +95,12 @@ El frontend estará disponible en [http://localhost:5173](http://localhost:5173)
 
 ```
 SHAKAI/
-├── backend/     # Proyecto Django (DRF + MySql + Django Dockerfile)
+├── backend/     # Proyecto Django (DRF + MySql + Django  
 ├── frontend/    # PRpyecto React + Vite y React Dockerfile
 ├── venv/
 ├── docker-compose.yml
 └── README.md
 ```
-
----
-
-## 📜 Licencia
-
-Este proyecto está bajo la licencia MIT.
 
 ---
 

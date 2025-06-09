@@ -1,47 +1,52 @@
 version: "3.8"
 
 services:
+  # Base de datos MySQL inicializada automáticamente
   db:
     image: mysql:8.0
     container_name: shakai-mysql
     restart: always
     environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mydb
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
-      MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - db_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
+  # Backend Django
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: shakai-backend
-    volumes:
-      - ./backend:/app
+    restart: on-failure
     ports:
       - "8000:8000"
     environment:
-      DATABASE_NAME: mydb
-      DATABASE_USER: myuser
-      DATABASE_PASSWORD: mypassword
-      DATABASE_HOST: db
-      DATABASE_PORT: 3306
+      # Deben coincidir con ENV del Dockerfile y settings.py
+      SECRET_KEY:    django-insecure-yourprodsecret
+      DEBUG:         "False"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DB_NAME:       mydb
+      DB_USER:       myuser
+      DB_PASSWORD:   mypassword
+      DB_HOST:       db
+      DB_PORT:       "3306"
     depends_on:
       - db
 
+  # Frontend React
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: shakai-frontend
-    volumes:
-      - ./frontend:/app
+    restart: on-failure
     ports:
-      - "5173:5173"
+      - "5175:5175"
     depends_on:
       - backend
 
