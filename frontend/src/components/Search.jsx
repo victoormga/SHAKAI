@@ -55,8 +55,27 @@ function Search() {
             <div>
               <p className="font-medium">{perfil.display_name}</p>
               <p className="text-xs text-gray-500">
-                {perfil.is_private ? "Privado" : "Público"}
+                {perfil.is_blocked ? "Bloqueado"
+                  : perfil.is_private ? "Privado"
+                  : "Público"
+                }
               </p>
+              {perfil.is_blocked && (
+                <button
+                  onClick={async () => {
+                    await api.delete(`/blocks/unblock/${perfil.user}/`);
+                    // refrescar búsqueda tras desbloquear
+                    setResults((prev) =>
+                      prev.map(p =>
+                        p.user === perfil.user ? { ...p, is_blocked: false } : p
+                      )
+                    );
+                  }}
+                  className="ml-auto text-sm text-blue-600"
+                >
+                  Desbloquear
+                </button>
+              )}
             </div>
           </div>
         ))}

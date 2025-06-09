@@ -154,27 +154,34 @@ function Profile() {
         </div>
       )}
 
-      <hr />
-
-      <div>
-        <h3 className="text-xl mb-2">Publicaciones</h3>
-        {posts.length === 0 ? (
-          <p>No tiene publicaciones.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                refreshFeed={() => {
-                  // Quitar post de la vista si lo borró el autor
-                  setPosts((prev) => prev.filter((p) => p.id !== post.id));
-                }}
-              />
-            ))}
-          </div>
+      {/* Sólo muestro publicaciones si no está bloqueado y
+          (es público o es mi perfil o sigo al usuario) */}
+      {!profileData.is_blocked && 
+        (!profileData.is_private || isOwnProfile || isFollowing) && (
+          <>
+            <hr />
+            <div>
+              <h3 className="text-xl mb-2">Publicaciones</h3>
+              {posts.length === 0 
+                ? <p>No tiene publicaciones.</p>
+                : (
+                  <div className="grid …">
+                    {posts.map((post) => (
+                      <PostCard
+                        key={post.id}
+                        post={post}
+                        refreshFeed={() => {
+                          // Quitar post de la vista si lo borró el autor
+                          setPosts((prev) => prev.filter((p) => p.id !== post.id));
+                        }}
+                      />
+                    ))}
+                  </div>
+                )
+              }
+            </div>
+          </>
         )}
-      </div>
     </div>
   );
 }

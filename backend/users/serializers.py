@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from .models import User, Profile
 from follows.models import Follow
 from posts.models import Post
+from blocks.models import Block
 
 # --------------------------------------------
 # Serializador para registro de usuarios
@@ -90,8 +91,16 @@ class UserSerializer(serializers.ModelSerializer):
 # --------------------------------------------
 class ProfileListSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email", read_only=True)
+    is_blocked = serializers.SerializerMethodField()
+    is_private = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Profile
-        fields = ("user", "email", "display_name", "profile_image", "is_private")
+        fields = ("user", "email", "display_name", "profile_image", "is_private", "is_blocked")
         read_only_fields = ("user", "email", "profile_image", "is_private")
+
+    def get_is_blocked(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+        return Block.objects.filter(blocker=request.user, blocked=obj.user).exists()

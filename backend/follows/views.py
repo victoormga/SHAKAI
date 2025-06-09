@@ -102,3 +102,24 @@ def accept_follow_request(request, follow_id):
     )
 
     return Response({"detail": "Solicitud aceptada. Ahora sigues a este usuario."}, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def pending_follow_requests(request):
+    """
+    GET /api/follow/requests/
+    Devuelve las solicitudes pendientes (is_accepted=False) donde 'following' es el usuario autenticado.
+    Cada elemento: { follow_id, follower_id, follower_display_name }.
+    """
+    from .models import Follow
+    # Solo solicitudes dirigidas a mí (following=request.user) y aún no aceptadas
+    pendientes = Follow.objects.filter(following=request.user, is_accepted=False)
+    data = [
+        {
+            "follow_id": f.id,
+            "follower_id": f.follower.id,
+            "follower_display_name": f.follower.profile.display_name,
+        }
+        for f in pendientes
+    ]
+    return Response(data, status=status.HTTP_200_OK)

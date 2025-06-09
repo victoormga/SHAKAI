@@ -56,27 +56,16 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user.profile
 
 # --------------------------------------------
-# Vista para ver el perfil de otro usuario (si es público o ya me sigue)
+# Vista para ver el perfil de otro usuario, se ocultan las publicaciones en el frontend 
 # --------------------------------------------
 class ProfileDetailView(generics.RetrieveAPIView):
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = "user_id"
 
     def get_object(self):
-        user_id = self.kwargs["user_id"]
-        perfil = get_object_or_404(Profile, user__id=user_id)
-        # Si el perfil es privado, solo dejo ver si existe Follow con is_accepted=True
-        if perfil.is_private:
-            from follows.models import Follow
-            # Comprobar si el request.user sigue a este usuario y está aceptado
-            autorizado = Follow.objects.filter(
-                follower=self.request.user,
-                following=perfil.user,
-                is_accepted=True
-            ).exists()
-            if not autorizado:
-                raise Response({"detail": "Perfil privado"}, status=status.HTTP_403_FORBIDDEN)
-        return perfil
+        # Simplemente devolvemos el perfil; sin comprobaciones de privacidad aquí
+        return get_object_or_404(Profile, user__id=self.kwargs["user_id"])
 
 # --------------------------------------------
 # Vista para obtener mis datos de usuario (incluye perfil)

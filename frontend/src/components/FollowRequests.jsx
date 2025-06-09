@@ -12,7 +12,7 @@ export default function FollowRequests() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await api.get("/follow/requests/");
+        const res = await api.get("/follows/requests/");
         // res.data = [{ follow_id, follower_id, follower_display_name }, ...]
         setRequests(res.data);
       } catch (err) {
@@ -26,7 +26,7 @@ export default function FollowRequests() {
 
   const acceptRequest = async (followId) => {
     try {
-      await api.post(`/follow/accept/${followId}/`);
+      await api.post(`/follows/accept/${followId}/`);
       // Quitamos la solicitud de la lista local
       setRequests((prev) => prev.filter((r) => r.follow_id !== followId));
     } catch (err) {

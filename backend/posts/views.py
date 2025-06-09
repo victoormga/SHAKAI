@@ -76,11 +76,36 @@ class ListUserPostsView(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        user_id = self.kwargs["user_id"]
-        return Post.objects.filter(
-            user__id=user_id,
-            is_deleted=False
-        ).order_by("-created_at")
+        me = self.request.user
+        target_id = self.kwargs["user_id"]
+        
+        from users.models import Profile
+        from follows.models import Follow
+        from blocks.models import Block
+
+        # 1) Si bloqueado recíproco, no ver nada
+        if Block.objects.filter(
+            Q(blocker=me, blocked__id=target_id) |
+            Q(blocked=me, blocker__id=target_id)
+        ).exists():
+            return Post.objects.none()
+
+        profile = get_object_or_404(Profile, user__id=target_id)
+
+        # 2) Mostrar posts solo si:
+        #    a) soy yo, o 
+        #    b) perfil es público, o
+        #    c) sigo al usuario y me aceptaron.
+        follows = Follow.objects.filter(
+            follower=me, following__id=target_id, is_accepted=True
+        ).exists()
+        if target_id == me.id or not profile.is_private or follows:
+            return Post.objects.filter(
+                user__id=target_id, is_deleted=False
+            ).order_by("-created_at")
+
+        # 3) En cualquier otro caso (perfil privado sin seguir) no devolvemos posts
+        return Post.objects.none()
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
