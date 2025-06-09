@@ -35,13 +35,13 @@ cd SHAKAI
 ###  2. Construye y levanta los contenedores:
 
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 ###  3. Aplica migraciones y crea el superusuario (solo una vez):
 
 ```bash
-docker-compose exec backend python manage.py migrate
-docker-compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py createsuperuser
 ```
 
 ###  4. Accede a la app, teniendo estos dos puertos abiertos necesariamente (entrando por el del Frontend):
