@@ -48,6 +48,18 @@ export default function PostModal({ post, onClose, onDelete }) {
     }
   };
 
+  // Borrar comentario
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("¿Eliminar este comentario?")) return;
+    try {
+      await api.delete(`/comments/comments/${commentId}/`);
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    } catch (err) {
+      console.error("Error al eliminar comentario:", err);
+      alert("No se pudo eliminar el comentario.");
+    }
+  };
+
   // Borrar post
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -125,9 +137,20 @@ export default function PostModal({ post, onClose, onDelete }) {
                 <p className="text-gray-500">Sin comentarios aún</p>
               ) : (
                 comments.map((comment) => (
-                  <div key={comment.id} className="pb-2 border-b">
-                    <p className="text-sm font-medium">{comment.user_display_name}</p>
-                    <p className="text-sm text-gray-700">{comment.content}</p>
+                  <div key={comment.id} className="flex justify-between items-start pb-2 border-b">
+                    <div>
+                      <p className="text-sm font-medium">{comment.user_display_name}</p>
+                      <p className="text-sm text-gray-700">{comment.content}</p>
+                    </div>
+                    {user?.id === comment.user && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="ml-2 hover:text-red-600 focus:outline-none"
+                        title="Eliminar comentario"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
                   </div>
                 ))
               )}

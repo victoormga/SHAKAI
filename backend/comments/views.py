@@ -51,12 +51,6 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
         ctx["request"] = self.request
         return ctx
 
-    def perform_update(self, serializer):
-        comment = self.get_object()
-        if comment.user != self.request.user:
-            raise permissions.PermissionDenied("No puedes editar este comentario")
-        serializer.save()
-
     def perform_destroy(self, instance):
         if instance.user != self.request.user:
             raise permissions.PermissionDenied("No puedes eliminar este comentario")
