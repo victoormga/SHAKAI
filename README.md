@@ -36,20 +36,14 @@ cd SHAKAI
 
 ```bash
 docker compose up --build -d
+docker compose up
 ```
-###  3. Aplica migraciones y crea el superusuario (solo una vez):
-
-```bash
-docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py createsuperuser
-```
-
-###  4. Accede a la app, teniendo estos dos puertos abiertos necesariamente (entrando por el del Frontend):
+###  3. Accede a la app, teniendo estos dos puertos abiertos necesariamente (entrando por el del Frontend):
 
 ```bash
 Backend (API): http://localhost:8000
 
-Frontend: http://localhost:5173
+Frontend: http://localhost:5175
 ```
 ### Para eliminar los contenedores:
 
