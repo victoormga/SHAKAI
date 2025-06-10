@@ -10,6 +10,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        build-essential \
        default-libmysqlclient-dev \
+       netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # 4. Directorio de trabajo
