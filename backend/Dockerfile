@@ -20,7 +20,6 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt \
-    && pip install cryptography
 
 # 6. Copiar el resto del código
 COPY . .
