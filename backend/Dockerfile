@@ -19,7 +19,7 @@ WORKDIR /app
 # 5. Copiar e instalar dependencias Python
 COPY requirements.txt ./
 RUN pip install --upgrade pip \
-    && pip install -r requirements.txt \
+    && pip install -r requirements.txt 
 
 # 6. Copiar el resto del código
 COPY . .
