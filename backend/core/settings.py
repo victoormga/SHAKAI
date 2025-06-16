@@ -145,7 +145,7 @@ AUTH_USER_MODEL = 'users.User'
 # CORS PARA LOCAL Y DOCKER EN MI PC
 # CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://localhost:5175", "http://127.0.0.1:5175", "http://172.19.0.4:5175"]  # Frontend local con Vite, y el Fontend con Docker
 
-CORS_ALLOWED_ORIGINS = True 
+CORS_ALLOWED_ALL_ORIGINS = True 
 
 # Django REST Framework settings
 REST_FRAMEWORK = {
